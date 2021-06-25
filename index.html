@@ -1,0 +1,312 @@
+<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+
+
+<script src="./google-pay.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+
+<style>
+	* {
+		font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+		font-size: 20px;
+	}
+
+	body {
+		max-width: 700px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+
+	h1,
+	h3 {
+		font-weight: normal;
+		text-align: center;
+		font-size: 2rem;
+
+	}
+
+	h3 {
+		font-size: 1.2rem;
+		margin: 0;
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		font-weight: bold;
+	}
+
+	input {
+		text-transform: uppercase;
+		border: none;
+		width: 100%;
+		text-align: center;
+		background: transparent;
+	}
+
+	input:focus,
+	select:focus,
+	textarea:focus,
+	button:focus {
+		outline: none;
+	}
+
+	#licence {
+		display: flex;
+		background-color: #f7f7f7;
+		border: 1px solid gray;
+		border-radius: 5px;
+		/* margin: 1rem; */
+	}
+
+	#licence * {
+		font-size: 1.4rem;
+	}
+
+	i {
+		color: gray;
+		padding: .3rem;
+		/* font-weight: bold; */
+	}
+
+	#duration {
+		display: flex;
+		/* margin: 1rem; */
+		justify-content: space-between;
+	}
+
+	#duration>div {
+		text-align: center;
+	}
+
+	#more,
+	#less {
+		/* display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center; */
+		border: 0;
+		background: #eee;
+		border-radius: 100%;
+		width: 3rem;
+		height: 3rem;
+		font-size: 2rem;
+		/* text-align: center;
+		vertical-align: middle; */
+		padding: 0;
+		/* line-height: 4rem; */
+		/* padding-left: -2rem; */
+	}
+
+
+	#less {
+		background: hsla(0, 50%, 60%, 90%)
+	}
+
+	#more {
+		background: hsla(120, 50%, 60%, 90%)
+	}
+
+	apple-pay-button {
+		--apple-pay-button-width: 150px;
+		--apple-pay-button-height: 30px;
+		--apple-pay-button-border-radius: 3px;
+		--apple-pay-button-padding: 0px 0px;
+		--apple-pay-button-box-sizing: border-box;
+	}
+
+	#pay {
+		height: 2.5rem;
+		width: 100%;
+		/* max-width: 750px; */
+		display: block;
+		margin: 2rem auto;
+		-webkit-appearance: -apple-pay-button;
+		-apple-pay-button-type: buy;
+	}
+
+	#summary {
+		text-align: center;
+	}
+</style>
+
+<!-- <h3>Parkplatz</h3> -->
+<h1>Stauffenplatz</h1>
+<!-- <center>Münster</center> -->
+
+<!-- <br /> -->
+
+<h3>Dein Kennzeichen:</h3>
+<div id='licence'>
+	<input id='cities' list="cities" placeholder="CITY" maxlength="3">
+	<datalist id="cities">
+		<option>WAF</option>
+		<option>MS</option>
+		<option>RE</option>
+		<option>HB</option>
+		<option>HL</option>
+	</datalist>
+	<i> - </i>
+	<input type='text' id='letters' placeholder='AA' maxlength="2" />
+	<i> - </i>
+	<input type='text' id='numbers' pattern="\d*" placeholder='111' maxlength="4" />
+</div>
+
+<br />
+
+<h3>gewünschte Parkdauer:</h3>
+<div id='duration'>
+	<button id='less'> - </button>
+	<div>
+		<div id='hours'></div>
+		<div id='minutes'></div>
+
+	</div>
+	<button id='more'> + </button>
+</div>
+
+<!-- <br /> -->
+
+
+<h3>Zusammenfassung:</h3>
+<div id='summary'>
+	<div>Parken bis <span id='parkEnd'></span></div>
+	<div>für <span id='parkPrice'></span> Euro</div>
+</div>
+
+<!-- <br /> -->
+<!-- <br /> -->
+
+<apple-pay-button buttonstyle="black" type="plain" locale="en"></apple-pay-button>
+
+<button id='pay'></button>
+
+<br />
+<br />
+<div id="container"></div>
+
+
+
+<div id="smart-button-container">
+	<div style="text-align: center;">
+		<div id="paypal-button-container"></div>
+	</div>
+</div>
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"
+	data-sdk-integration-source="button-factory"></script>
+<script>
+	function initPayPalButton() {
+		paypal.Buttons({
+			style: {
+				shape: 'rect',
+				color: 'gold',
+				layout: 'vertical',
+				label: 'paypal',
+
+			},
+
+			createOrder: function (data, actions) {
+				return actions.order.create({
+					purchase_units: [{ "amount": { "currency_code": "EUR", "value": 1 } }]
+				});
+			},
+
+			onApprove: function (data, actions) {
+				return actions.order.capture().then(function (details) {
+					alert('Transaction completed by ' + details.payer.name.given_name + '!');
+				});
+			},
+
+			onError: function (err) {
+				console.log(err);
+			}
+		}).render('#paypal-button-container');
+	}
+	initPayPalButton();
+</script>
+
+
+
+<script async   src="https://pay.google.com/gp/p/js/pay.js"   onload="onGooglePayLoaded()"></script>
+
+
+
+<script>
+	document.addEventListener('dblclick', e=> {
+		e.preventDefault();
+		// alert('no')
+	})
+
+	document.addEventListener('gesturestart', function (e) {
+		e.preventDefault();
+		// special hack to prevent zoom-to-tabs gesture in safari
+		document.body.style.zoom = 0.99;
+	});
+
+	document.addEventListener('gesturechange', function (e) {
+		e.preventDefault();
+		// special hack to prevent zoom-to-tabs gesture in safari
+		document.body.style.zoom = 0.99;
+	});
+
+	document.addEventListener('gestureend', function (e) {
+		e.preventDefault();
+		// special hack to prevent zoom-to-tabs gesture in safari
+		document.body.style.zoom = 0.99;
+	});
+</script>
+
+
+
+<script>
+	// remember licence
+	document.addEventListener('input', e => {
+		// console.log(e.target.id,e.target.value)
+		localStorage[e.target.id] = e.target.value
+	});
+	// restore licence
+	window.addEventListener('load', e => {
+		// console.log('page is fully loaded');
+		for (var i = 0; i < localStorage.length; i++) {
+			let key = localStorage.key(i)
+			let val = localStorage[key]
+			// console.log(key, val)
+			try {
+				document.querySelector(`input#${key}`).value = val
+			} catch { }
+		}
+	});
+</script>
+
+
+
+
+<script>
+	let duration = 60;
+	let minDuration = 30;
+	let durationStep = 15;
+	let pricePerMinute = 2;
+
+	function lessTime() {
+		duration -= durationStep;
+		if (duration < minDuration) duration = minDuration
+		updateDuration()
+	}
+	function moreTime() {
+		duration += durationStep;
+		updateDuration()
+	}
+	function updateDuration() {
+		let hours = Math.floor(duration / 60)
+		let minutes = duration % 60
+		document.querySelector('#hours').textContent = hours ? (hours + " " + ((hours == 1) ? "Stunde" : "Stunden")) : ''
+		document.querySelector('#minutes').textContent = minutes ? (minutes + " Minuten") : ""
+		let now = new Date()
+		document.querySelector('#parkEnd').textContent = (now.getHours() + hours) + ':' + String(now.getMinutes() + minutes).padStart(2, '0')
+		document.querySelector('#parkPrice').textContent = Number((duration * pricePerMinute)/100).toFixed(2)
+	}
+
+	document.querySelector('#more').addEventListener('click', moreTime)
+	document.querySelector('#less').addEventListener('click', lessTime)
+
+	updateDuration()
+</script>
