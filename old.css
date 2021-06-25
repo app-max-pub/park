@@ -1,0 +1,27 @@
+#more,
+#less {
+	/* display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center; */
+	border: 0;
+	background: #eee;
+	border-radius: 100%;
+	width: 3rem;
+	height: 3rem;
+	font-size: 2rem;
+	/* text-align: center;
+	vertical-align: middle; */
+	padding: 0;
+	/* line-height: 4rem; */
+	/* padding-left: -2rem; */
+}
+
+
+#less {
+	background: hsla(0, 50%, 60%, 90%)
+}
+
+#more {
+	background: hsla(120, 50%, 60%, 90%)
+}
