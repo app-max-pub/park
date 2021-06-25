@@ -115,13 +115,20 @@
 	}
 
 	#pay {
-		height: 2.5rem;
+		/* height: 2.5rem; */
+		height: 2rem;
 		width: 100%;
 		/* max-width: 750px; */
 		display: block;
 		margin: 2rem auto;
 		-webkit-appearance: -apple-pay-button;
 		-apple-pay-button-type: buy;
+	}
+
+
+	#container {
+		width: 100%;
+		height: 5rem;
 	}
 
 	#summary {
@@ -183,6 +190,7 @@
 <br />
 <br />
 <div id="container"></div>
+<script async   src="https://pay.google.com/gp/p/js/pay.js"   onload="onGooglePayLoaded()"></script>
 
 
 
@@ -226,7 +234,6 @@
 
 
 
-<script async   src="https://pay.google.com/gp/p/js/pay.js"   onload="onGooglePayLoaded()"></script>
 
 
 
@@ -302,7 +309,7 @@
 		document.querySelector('#minutes').textContent = minutes ? (minutes + " Minuten") : ""
 		let now = new Date()
 		now.setMinutes(now.getMinutes() + duration)
-		document.querySelector('#parkEnd').textContent = (now.getHours() ) + ':' + String(now.getMinutes() ).padStart(2, '0')
+		document.querySelector('#parkEnd').textContent = (now.getHours()) + ':' + String(now.getMinutes()).padStart(2, '0')
 		document.querySelector('#parkPrice').textContent = Number((duration * pricePerMinute) / 100).toFixed(2)
 	}
 
