@@ -10,8 +10,7 @@ function initPayPalButton() {
 
 		createOrder: function (data, actions) {
 			return actions.order.create({
-				purchase_units: [{ "amount": { "currency_code": "EUR", "value": 1 } }],
-				application_context: { shipping_preference: 'NO_SHIPPING', locale:'de-DE' },
+				purchase_units: [{ "amount": { "currency_code": "EUR", "value": 1 } }]
 			});
 		},
 
@@ -24,6 +23,6 @@ function initPayPalButton() {
 		onError: function (err) {
 			console.log(err);
 		}
-	}).render('#payPal');
+	}).render('#paypal-button-container');
 }
 initPayPalButton();

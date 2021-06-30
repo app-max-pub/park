@@ -14,61 +14,65 @@
 
 	<!-- <br /> -->
 
-	<h3>Dein Kennzeichen:</h3>
+	<h3>Ihr Kennzeichen</h3>
 	<div id='licence'>
-		<input id='cities' list="cities" placeholder="CITY" maxlength="3">
+		<div id='cc'>D</div>
+		<!-- <input id='cities' list="cities" pattern="[a-zA-Z]{1,3}" placeholder="AAA" maxlength="3">
 		<datalist id="cities">
 			<option>WAF</option>
 			<option>MS</option>
 			<option>RE</option>
 			<option>HB</option>
 			<option>HL</option>
-		</datalist>
+		</datalist> -->
+		<input id='cities' pattern="[a-zA-Z]{1,3}" placeholder="AAA" maxlength="3">
+		<!-- <div contenteditable="true" id='letters' pattern="[a-zA-Z]{1,2}" placeholder='AAA' maxlength="2"></div> -->
+
 		<i> - </i>
-		<input type='text' id='letters' placeholder='AA' maxlength="2" />
+		<input type='text' id='letters' pattern="[a-zA-Z]{1,2}" placeholder='BB' maxlength="2" />
+		<!-- <div contenteditable="true" id='letters' pattern="[a-zA-Z]{1,2}" placeholder='BB' maxlength="2"></div> -->
 		<i> - </i>
-		<input type='text' id='numbers' pattern="\d*" placeholder='111' maxlength="4" />
+		<!-- <div contenteditable="true" id='letters' pattern="\d{1,4}" placeholder='1234' maxlength="2"></div> -->
+		<input type='text' id='numbers' pattern="\d*" placeholder='1234' size='4' maxlength="4" />
 	</div>
 
-	<br />
 
-	<h3>gewünschte Parkdauer:</h3>
+	<h3>gewünschte Parkdauer</h3>
 	<div id='duration'>
 		<img id='less' src='less.png' />
 		<!-- <button id='less'> - </button> -->
 		<div>
-			<div id='hours'></div>
-			<div id='minutes'></div>
-
+			<!-- 			<div id='hours'></div>
+			<div id='minutes'></div> -->
 		</div>
 		<img id='more' src='more.png' />
 		<!-- <button id='more'> + </button> -->
 	</div>
 
-	<!-- <br /> -->
 
 
-	<h3>Zusammenfassung:</h3>
+	<h3>Zusammenfassung</h3>
 	<div id='summary'>
-		<div>Parken bis <span id='parkEnd'></span></div>
+		<div>Parkticket bis <span id='parkEnd'></span> Uhr</div>
 		<div>für <span id='parkPrice'></span> Euro</div>
 	</div>
 
+	<!-- <div id='browser'>brow</div> -->
 	<!-- <apple-pay-button buttonstyle="black" type="plain" locale="en"></apple-pay-button> -->
 
-	<button id='applePay'></button>
+	<div id='payButtons'>
+		<div id='applePay' style='display:none'></div>
 
-	<div id="container"></div>
+		<div id="googlePay"></div>
 
-	<br />
-
-	<div id="paypal-button-container"></div>
-
+		<div id="payPal"></div>
+	</div>
 	<!-- <div id="smart-button-container">
 		<div style="text-align: center;">
 			<div id="paypal-button-container"></div>
 		</div>
 	</div> -->
+	<!-- <div id='userAgent'></div> -->
 
 </body>
 
@@ -78,6 +82,7 @@
 
 
 
+<script src='input-validation.js'></script>
 <script src='input-state.js'></script>
 <script src='gesture-block.js'></script>
 <script src='script.js'></script>
@@ -85,15 +90,15 @@
 
 
 
-
-
-<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
-
-<script src="google-pay.js"></script>
+<!-- <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+<script src='pay.apple.js'></script> -->
+<!-- <script src="pay.google.js"></script>
+<script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script> -->
+<script src="pay.google.js"></script>
 <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
 
-
-<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR&disable-funding=credit,card,sofort,sepa,giropay"
+<script
+	src="https://www.paypal.com/sdk/js?currency=EUR&disable-funding=sofort,sepa,giropay&client-id=Abd_l2_2V9AeaciGfPo_OR9ygOIxmuAddH1O43mnPSCmWzciDH8aaWOCWcQP-cpWbg9OzxWIdFcnvDE_"
 	data-sdk-integration-source="button-factory"></script>
 <!-- card	Credit or debit cards
 credit	PayPal Credit

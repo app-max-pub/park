@@ -1,0 +1,254 @@
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+	<!-- <h3>Parkplatz</h3> -->
+	<h1>Stauffenplatz</h1>
+	<!-- <center>Münster</center> -->
+
+	<!-- <br /> -->
+
+	<h3>Ihr Kennzeichen:</h3>
+	<div id='licence'>
+		<input id='cities' list="cities" placeholder="CITY" maxlength="3">
+		<datalist id="cities">
+			<option>WAF</option>
+			<option>MS</option>
+			<option>RE</option>
+			<option>HB</option>
+			<option>HL</option>
+		</datalist>
+		<i> - </i>
+		<input type='text' id='letters' placeholder='AB' maxlength="2" />
+		<i> - </i>
+		<input type='text' id='numbers' pattern="\d*" placeholder='1234' maxlength="4" />
+	</div>
+
+	<br />
+
+	<h3>gewünschte Parkdauer:</h3>
+	<div id='duration'>
+		<img id='less' src='less.png' />
+		<!-- <button id='less'> - </button> -->
+		<div>
+			<div id='hours'></div>
+			<div id='minutes'></div>
+
+		</div>
+		<img id='more' src='more.png' />
+		<!-- <button id='more'> + </button> -->
+	</div>
+
+	<!-- <br /> -->
+
+
+	<h3>Zusammenfassung:</h3>
+	<div id='summary'>
+		<div>Parken bis <span id='parkEnd'></span></div>
+		<div>für <span id='parkPrice'></span> Euro</div>
+	</div>
+
+	<apple-pay-button buttonstyle="black" type="plain" locale="en"></apple-pay-button>
+
+	<button id='applePay'></button>
+
+	<div id="container"></div>
+
+	<br />
+
+	<div id="paypal-button-container"></div>
+
+	<!-- <div id="smart-button-container">
+		<div style="text-align: center;">
+			<div id="paypal-button-container"></div>
+		</div>
+	</div> -->
+
+</body>
+
+</html>
+
+
+
+
+
+<script src='input-state.js'></script>
+<script src='gesture-block.js'></script>
+<script src='script.js'></script>
+
+
+
+
+
+
+<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+<script src='pay.apple.js'></script>
+<!-- <script src="google-pay.js"></script>
+<script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script> -->
+
+
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR&disable-funding=credit,card,sofort,sepa,giropay"
+	data-sdk-integration-source="button-factory"></script>
+<!-- card	Credit or debit cards
+credit	PayPal Credit
+bancontact	Bancontact
+blik	BLIK
+eps	eps
+giropay	giropay
+ideal	iDEAL
+mercadopago	Mercado Pago
+mybank	MyBank
+p24	Przelewy24
+sepa	SEPA-Lastschrift
+sofort	Sofort
+venmo	Venmo -->
+<script src='paypal.js'></script>
+
+
+
+
+
+
+
+<div id="checkout">
+	<button id="buyButton">Checkout</button>
+</div>
+
+<script>
+	const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
+	const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+	if (window.PaymentRequest) {
+		const request = createPaymentRequest();
+
+		request.canMakePayment()
+			.then(function (result) {
+				if (result) {
+					// Display PaymentRequest dialog on interaction with the existing checkout button
+					document.getElementById('buyButton')
+						.addEventListener('click', onBuyClicked);
+				}
+			})
+			.catch(function (err) {
+				showErrorForDebugging(
+					'canMakePayment() error! ' + err.name + ' error: ' + err.message);
+			});
+	} else {
+		showErrorForDebugging('PaymentRequest API not available.');
+	}
+
+	/**
+	 * Show a PaymentRequest dialog after a user clicks the checkout button
+	 */
+	function onBuyClicked() {
+		createPaymentRequest()
+			.show()
+			.then(function (response) {
+				// Dismiss payment dialog.
+				response.complete('success');
+				handlePaymentResponse(response);
+			})
+			.catch(function (err) {
+				showErrorForDebugging(
+					'show() error! ' + err.name + ' error: ' + err.message);
+			});
+	}
+
+	/**
+	 * Define your unique Google Pay API configuration
+	 *
+	 * @returns {object} data attribute suitable for PaymentMethodData
+	 */
+	function getGooglePaymentsConfiguration() {
+		return {
+			environment: 'TEST',
+			apiVersion: 2,
+			apiVersionMinor: 0,
+			merchantInfo: {
+				// A merchant ID is available after approval by Google.
+				// 'merchantId':'12345678901234567890',
+				merchantName: 'Example Merchant'
+			},
+			allowedPaymentMethods: [{
+				type: 'CARD',
+				parameters: {
+					allowedAuthMethods: allowedCardAuthMethods,
+					allowedCardNetworks: allowedCardNetworks
+				},
+				tokenizationSpecification: {
+					type: 'PAYMENT_GATEWAY',
+					// Check with your payment gateway on the parameters to pass.
+					// @see {@link https://developers.google.com/pay/api/web/reference/request-objects#gateway}
+					parameters: {
+						'gateway': 'example',
+						'gatewayMerchantId': 'exampleGatewayMerchantId'
+					}
+				}
+			}]
+		};
+	}
+
+	/**
+	 * Create a PaymentRequest
+	 *
+	 * @returns {PaymentRequest}
+	 */
+	function createPaymentRequest() {
+		// Add support for the Google Pay API.
+		const methodData = [{
+			supportedMethods: 'https://google.com/pay',
+			data: getGooglePaymentsConfiguration()
+		}];
+		// Add other supported payment methods.
+		methodData.push({
+			supportedMethods: 'basic-card',
+			data: {
+				supportedNetworks:
+					Array.from(allowedCardNetworks, (network) => network.toLowerCase())
+			}
+		});
+
+		const details = {
+			total: { label: 'Test Purchase', amount: { currency: 'USD', value: '1.00' } }
+		};
+
+		const options = {
+			requestPayerEmail: true,
+			requestPayerName: true
+		};
+
+		return new PaymentRequest(methodData, details, options);
+	}
+
+	/**
+	 * Process a PaymentResponse
+	 *
+	 * @param {PaymentResponse} response returned when a user approves the payment request
+	 */
+	function handlePaymentResponse(response) {
+		const formattedResponse = document.createElement('pre');
+		formattedResponse.appendChild(
+			document.createTextNode(JSON.stringify(response.toJSON(), null, 2)));
+		document.getElementById('checkout')
+			.insertAdjacentElement('afterend', formattedResponse);
+	}
+
+	/**
+	 * Display an error message for debugging
+	 *
+	 * @param {string} text message to display
+	 */
+	function showErrorForDebugging(text) {
+		const errorDisplay = document.createElement('code');
+		errorDisplay.style.color = 'red';
+		errorDisplay.appendChild(document.createTextNode(text));
+		const p = document.createElement('p');
+		p.appendChild(errorDisplay);
+		document.getElementById('checkout').insertAdjacentElement('afterend', p);
+	}
+</script>
